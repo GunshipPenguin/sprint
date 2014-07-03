@@ -1,0 +1,40 @@
+--Sprint mod for minetest by GunshipPenguin
+
+--CHANGE THESE VARIABLES TO ADJUST SPRINT SPEED/JUMP HEIGHT
+--1 represents normal speed/jump height so 1.5 would mean 50% more and 2.0 would be 100% more
+SPRINT_SPEED = 1.5 --Speed while sprinting
+SPRINT_JUMP = 1.1 --Jump height while sprinting
+
+players = {}
+minetest.register_on_joinplayer(function(player)
+	players[player:get_player_name()] = {state = 0, timeOut = 0}
+end)
+minetest.register_globalstep(function(dtime)
+
+	--Loop through all connected players
+	for playerName,playerInfo in pairs(players) do
+	
+		player = minetest.get_player_by_name(playerName)
+		playerMovement = player:get_player_control()["up"]
+		
+		if playerInfo["state"] == 2 then
+			players[playerName]["timeOut"] = players[playerName]["timeOut"] + 1
+			if playerInfo["timeOut"] == 10 then
+				players[playerName]["timeOut"] = 0
+				players[playerName]["state"] = 0
+			end
+		end
+
+		if playerMovement == false and playerInfo["state"] == 3 then --Stopped
+			players[playerName]["state"] = 0
+			player:set_physics_override({speed=1.0,jump=1.0})
+		elseif playerMovement == true and playerInfo["state"] == 0 then --Moving
+			players[playerName]["state"] = 1
+		elseif playerMovement == false and playerInfo["state"] == 1 then --Primed
+			players[playerName]["state"] = 2
+		elseif playerMovement == true and playerInfo["state"] == 2 then --Sprinting
+			players[playerName]["state"] = 3
+			player:set_physics_override({speed=SPRINT_SPEED,jump=SPRINT_JUMP})
+		end
+	end
+end)
