@@ -9,32 +9,38 @@ players = {}
 minetest.register_on_joinplayer(function(player)
 	players[player:get_player_name()] = {state = 0, timeOut = 0}
 end)
+minetest.register_on_leaveplayer(function(player)
+	playerName = player:get_player_name()
+	players[playerName] = nil
+end)
 minetest.register_globalstep(function(dtime)
 
 	--Loop through all connected players
 	for playerName,playerInfo in pairs(players) do
 	
 		player = minetest.get_player_by_name(playerName)
-		playerMovement = player:get_player_control()["up"]
-		
-		if playerInfo["state"] == 2 then
-			players[playerName]["timeOut"] = players[playerName]["timeOut"] + 1
-			if playerInfo["timeOut"] == 10 then
-				players[playerName]["timeOut"] = 0
-				players[playerName]["state"] = 0
+		if player ~= nil then
+			playerMovement = player:get_player_control()["up"]
+			
+			if playerInfo["state"] == 2 then
+				players[playerName]["timeOut"] = players[playerName]["timeOut"] + 1
+				if playerInfo["timeOut"] == 10 then
+					players[playerName]["timeOut"] = 0
+					players[playerName]["state"] = 0
+				end
 			end
-		end
 
-		if playerMovement == false and playerInfo["state"] == 3 then --Stopped
-			players[playerName]["state"] = 0
-			player:set_physics_override({speed=1.0,jump=1.0})
-		elseif playerMovement == true and playerInfo["state"] == 0 then --Moving
-			players[playerName]["state"] = 1
-		elseif playerMovement == false and playerInfo["state"] == 1 then --Primed
-			players[playerName]["state"] = 2
-		elseif playerMovement == true and playerInfo["state"] == 2 then --Sprinting
-			players[playerName]["state"] = 3
-			player:set_physics_override({speed=SPRINT_SPEED,jump=SPRINT_JUMP})
+			if playerMovement == false and playerInfo["state"] == 3 then --Stopped
+				players[playerName]["state"] = 0
+				player:set_physics_override({speed=1.0,jump=1.0})
+			elseif playerMovement == true and playerInfo["state"] == 0 then --Moving
+				players[playerName]["state"] = 1
+			elseif playerMovement == false and playerInfo["state"] == 1 then --Primed
+				players[playerName]["state"] = 2
+			elseif playerMovement == true and playerInfo["state"] == 2 then --Sprinting
+				players[playerName]["state"] = 3
+				player:set_physics_override({speed=SPRINT_SPEED,jump=SPRINT_JUMP})
+			end
 		end
 	end
 end)
