@@ -38,8 +38,29 @@ minetest.register_globalstep(function(dtime)
 					players[playerName]["timeOut"] = nil
 					players[playerName]["state"] = 0
 				end
+			
+			--If the player is sprinting, create particles behind him/her
+			elseif playerInfo["state"] == 3 and gameTime % 0.1 == 0 then
+				local numParticles = math.random(1, 2)
+				local playerPos = player:getpos()
+				local playerNode = minetest.get_node({x=playerPos["x"], y=playerPos["y"]-1, z=playerPos["z"]})
+				if playerNode["name"] ~= "air" then
+					for i=1, numParticles, 1 do
+						minetest.add_particle({
+							pos = {x=playerPos["x"]+math.random(-1,1)*math.random()/2,y=playerPos["y"]+0.1,z=playerPos["z"]+math.random(-1,1)*math.random()/2},
+							vel = {x=0, y=5, z=0},
+							acc = {x=0, y=-13, z=0},
+							expirationtime = math.random(),
+							size = math.random()+0.5,
+							collisiondetection = true,
+							vertical = false,
+							texture = "default_dirt.png",
+						})
+					end
+				end
 			end
 			
+			--Ajust player states
 			if players[playerName]["moving"] == false and playerInfo["state"] == 3 then --Stopped
 				players[playerName]["state"] = 0
 				player:set_physics_override({speed=1.0,jump=1.0})
