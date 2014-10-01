@@ -10,6 +10,7 @@ local SPRINT_JUMP = 1.1 --Jump height while sprinting
 local SPRINT_TIMEOUT = 0.25
 
 local players = {}
+
 minetest.register_on_joinplayer(function(player)
 	players[player:get_player_name()] = {state = 0, timeOut = 0}
 end)
@@ -19,26 +20,22 @@ minetest.register_on_leaveplayer(function(player)
 end)
 minetest.register_globalstep(function(dtime)
 
-	--Loop through all connected players and check if they are moving or not
-	for playerName,playerInfo in pairs(players) do
-		players[playerName]["moving"] = minetest.get_player_by_name(playerName):get_player_control()["up"]
-	end
-	
 	--Get the gametime
 	local gameTime = minetest.get_gametime()
-	
-	--Loop through all connected players and set their state (0=stopped, 1=moving, 2=primed, 3=sprinting)
+
+	--Loop through all connected players
 	for playerName,playerInfo in pairs(players) do
-	
 		local player = minetest.get_player_by_name(playerName)
 		if player ~= nil then
-			
+			-- check if they are moving or not
+			players[playerName]["moving"] = player:get_player_control()["up"]
+
 			if playerInfo["state"] == 2 then
 				if playerInfo["timeOut"] + SPRINT_TIMEOUT < gameTime then
 					players[playerName]["timeOut"] = nil
 					players[playerName]["state"] = 0
 				end
-			
+
 			--If the player is sprinting, create particles behind him/her
 			elseif playerInfo["state"] == 3 and gameTime % 0.1 == 0 then
 				local numParticles = math.random(1, 2)
@@ -59,7 +56,7 @@ minetest.register_globalstep(function(dtime)
 					end
 				end
 			end
-			
+
 			--Ajust player states
 			if players[playerName]["moving"] == false and playerInfo["state"] == 3 then --Stopped
 				players[playerName]["state"] = 0
@@ -76,3 +73,4 @@ minetest.register_globalstep(function(dtime)
 		end
 	end
 end)
+
