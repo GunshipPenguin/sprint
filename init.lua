@@ -1,16 +1,38 @@
---Sprint mod for Minetest by GunshipPenguin
+--[[
+Sprint mod for Minetest by GunshipPenguin
+
+To the extent possible under law, the author(s)
+have dedicated all copyright and related and neighboring rights 
+to this software to the public domain worldwide. This software is
+distributed without any warranty. 
+]]
 
 --Configuration variables, these are all explained in README.md
 local SPRINT_SPEED = 1.8
 local SPRINT_JUMP = 1.1
 local SPRINT_STAMINA = 20
 local SPRINT_TIMEOUT = 0.5
-local SPRINT_WARN = true
 
 local players = {}
+local staminaHud = {}
 
 minetest.register_on_joinplayer(function(player)
-	players[player:get_player_name()] = {state = 0, timeOut = 0, stamina = SPRINT_STAMINA, moving = false}
+	playerName = player:get_player_name()
+	players[playerName] = {
+	state = 0, 
+	timeOut = 0, 
+	stamina = SPRINT_STAMINA, 
+	moving = false, 
+	hud= player:hud_add({
+		hud_elem_type = "statbar",
+		position = {x=0.5,y=0.9},
+		size = "",
+		text = "stamina.png",
+		number = 20,
+		alignment = {x=0,y=1},
+		offset = {x=-175, y=-15},
+	}),
+	}
 end)
 minetest.register_on_leaveplayer(function(player)
 	playerName = player:get_player_name()
@@ -72,15 +94,16 @@ minetest.register_globalstep(function(dtime)
 				if playerInfo["stamina"] <= 0 then
 					playerInfo["stamina"] = 0
 					setState(playerName, 0)
-					if SPRINT_WARN then
-						minetest.chat_send_player(playerName, "Your sprint stamina has run out!")
-					end
 				end
 			
 			--Increase player's stamina if he/she is not sprinting and his/her stamina is less than SPRINT_STAMINA
 			elseif playerInfo["state"] ~= 3 and playerInfo["stamina"] < SPRINT_STAMINA then
 				playerInfo["stamina"] = playerInfo["stamina"] + dtime
 			end
+			
+			--Update the players's hud sprint stamina bar
+			player:hud_change(playerInfo["hud"], "number", playerInfo["stamina"])
+			
 		end
 	end
 end)
