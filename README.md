@@ -1,7 +1,7 @@
 Sprint Mod For Minetest by GunshipPenguin  
 
 Allows the player to sprint by double tapping w. By default, 
-sprinting will make the player travel 50% faster and allow him/her 
+sprinting will make the player travel 80% faster and allow him/her 
 to jump 10% higher. Also adds a stamina bar that goes down when the 
 player sprints and goes up when he/she isn't sprinting. 
 
