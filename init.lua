@@ -19,19 +19,20 @@ local staminaHud = {}
 minetest.register_on_joinplayer(function(player)
 	playerName = player:get_player_name()
 	players[playerName] = {
-	state = 0, 
-	timeOut = 0, 
-	stamina = SPRINT_STAMINA, 
-	moving = false, 
-	hud= player:hud_add({
-		hud_elem_type = "statbar",
-		position = {x=0.5,y=0.9},
-		size = "",
-		text = "stamina.png",
-		number = 20,
-		alignment = {x=0,y=1},
-		offset = {x=-175, y=-15},
-	}),
+		state = 0, 
+		timeOut = 0, 
+		stamina = SPRINT_STAMINA, 
+		moving = false, 
+		hud = player:hud_add({
+			hud_elem_type = "statbar",
+			position = {x=0.5,y=1},
+			size = {x=24, y=24},
+			text = "stamina.png",
+			number = 20,
+			alignment = {x=0,y=1},
+			offset = {x=-263, y=-110},
+			}
+		),
 	}
 end)
 minetest.register_on_leaveplayer(function(player)
