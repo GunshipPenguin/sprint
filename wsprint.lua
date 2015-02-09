@@ -21,7 +21,7 @@ minetest.register_on_joinplayer(function(player)
 			hud_elem_type = "statbar",
 			position = {x=0.5,y=1},
 			size = {x=24, y=24},
-			text = "stamina.png",
+			text = "sprint_stamina_icon.png",
 			number = 20,
 			alignment = {x=0,y=1},
 			offset = {x=-263, y=-110},
