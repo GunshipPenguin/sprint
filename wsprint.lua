@@ -11,13 +11,18 @@ local players = {}
 local staminaHud = {}
 
 minetest.register_on_joinplayer(function(player)
-	playerName = player:get_player_name()
+	local playerName = player:get_player_name()
 	players[playerName] = {
 		state = 0, 
 		timeOut = 0, 
 		stamina = SPRINT_STAMINA, 
 		moving = false, 
-		hud = player:hud_add({
+	}
+
+	if SPRINT_HUDBARS_USED then
+		hud.hudtables.sprint.add_all(player)
+	else
+		players[playerName].hud = player:hud_add({
 			hud_elem_type = "statbar",
 			position = {x=0.5,y=1},
 			size = {x=24, y=24},
@@ -26,11 +31,11 @@ minetest.register_on_joinplayer(function(player)
 			alignment = {x=0,y=1},
 			offset = {x=-263, y=-110},
 			}
-		),
-	}
+		)
+	end
 end)
 minetest.register_on_leaveplayer(function(player)
-	playerName = player:get_player_name()
+	local playerName = player:get_player_name()
 	players[playerName] = nil
 end)
 minetest.register_globalstep(function(dtime)
@@ -98,7 +103,12 @@ minetest.register_globalstep(function(dtime)
 			
 			--Update the players's hud sprint stamina bar
 			local numBars = (playerInfo["stamina"]/SPRINT_STAMINA)*20
-			player:hud_change(playerInfo["hud"], "number", numBars)
+
+			if SPRINT_HUDBARS_USED then
+				hud.change_hudbar(player, hud.hudtables.sprint, numBars, 20)
+			else
+				player:hud_change(playerInfo["hud"], "number", numBars)
+			end
 		end
 	end
 end)
