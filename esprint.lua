@@ -20,7 +20,7 @@ minetest.register_on_joinplayer(function(player)
 		epressed = false, 
 	}
 	if SPRINT_HUDBARS_USED then
-		hud.hudtables.sprint.add_all(player)
+		hb.init_hudbar(player, "sprint")
 	else
 		players[playerName].hud = player:hud_add({
 			hud_elem_type = "statbar",
@@ -97,7 +97,7 @@ minetest.register_globalstep(function(dtime)
 			--Update the players's hud sprint stamina bar
 
 			if SPRINT_HUDBARS_USED then
-				hud.change_hudbar(player, hud.hudtables.sprint, playerInfo["stamina"], SPRINT_STAMINA)
+				hb.change_hudbar(player, "sprint", playerInfo["stamina"])
 			else
 				local numBars = (playerInfo["stamina"]/SPRINT_STAMINA)*20
 				player:hud_change(playerInfo["hud"], "number", numBars)
