@@ -89,6 +89,10 @@ minetest.register_globalstep(function(dtime)
 			elseif playerInfo["sprinting"] == false and playerInfo["stamina"] < SPRINT_STAMINA then
 				playerInfo["stamina"] = playerInfo["stamina"] + dtime
 			end
+			-- Cap stamina at SPRINT_STAMINA
+			if playerInfo["stamina"] > SPRINT_STAMINA then
+				playerInfo["stamina"] = SPRINT_STAMINA
+			end
 			
 			--Update the players's hud sprint stamina bar
 			local numBars = (playerInfo["stamina"]/SPRINT_STAMINA)*20
