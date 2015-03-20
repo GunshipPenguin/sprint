@@ -17,7 +17,7 @@ minetest.register_on_joinplayer(function(player)
 		sprinting = false,
 		timeOut = 0, 
 		stamina = SPRINT_STAMINA, 
-		epressed = false, 
+		shouldSprint = false,
 	}
 	if SPRINT_HUDBARS_USED then
 		hb.init_hudbar(player, "sprint")
@@ -46,8 +46,12 @@ minetest.register_globalstep(function(dtime)
 	for playerName,playerInfo in pairs(players) do
 		local player = minetest.get_player_by_name(playerName)
 		if player ~= nil then
-			--Check if they are pressing the e key
-			players[playerName]["epressed"] = player:get_player_control()["aux1"]
+			--Check if the player should be sprinting
+			if player:get_player_control()["aux1"] and player:get_player_control()["up"] then
+				players[playerName]["shouldSprint"] = true
+			else
+				players[playerName]["shouldSprint"] = false
+			end
 			
 			--If the player is sprinting, create particles behind him/her 
 			if playerInfo["sprinting"] == true and gameTime % 0.1 == 0 then
@@ -71,9 +75,9 @@ minetest.register_globalstep(function(dtime)
 			end
 
 			--Adjust player states
-			if players[playerName]["epressed"] == true then --Stopped
+			if players[playerName]["shouldSprint"] == true then --Stopped
 				setSprinting(playerName, true)
-			elseif players[playerName]["epressed"] == false then
+			elseif players[playerName]["shouldSprint"] == false then
 				setSprinting(playerName, false)
 			end
 			
