@@ -26,7 +26,7 @@ minetest.register_on_joinplayer(function(player)
 			hud_elem_type = "statbar",
 			position = {x=0.5,y=1},
 			size = {x=24, y=24},
-			text = "sprint_stamina_icon.png",
+			text = "",
 			number = 20,
 			alignment = {x=0,y=1},
 			offset = {x=-263, y=-110},
@@ -84,6 +84,7 @@ minetest.register_globalstep(function(dtime)
 			--Lower the player's stamina by dtime if he/she is sprinting and set his/her state to 0 if stamina is zero
 			if playerInfo["sprinting"] == true then 
 				playerInfo["stamina"] = playerInfo["stamina"] - dtime
+				player:hud_change(playerInfo["hud"], "text", "sprint_stamina_icon.png")
 				if playerInfo["stamina"] <= 0 then
 					playerInfo["stamina"] = 0
 					setSprinting(playerName, false)
@@ -92,6 +93,10 @@ minetest.register_globalstep(function(dtime)
 			--Increase player's stamina if he/she is not sprinting and his/her stamina is less than SPRINT_STAMINA
 			elseif playerInfo["sprinting"] == false and playerInfo["stamina"] < SPRINT_STAMINA then
 				playerInfo["stamina"] = playerInfo["stamina"] + dtime
+				player:hud_change(playerInfo["hud"], "text", "sprint_stamina_icon.png")
+			-- hide bar if full and not sprinting
+			else
+				player:hud_change(playerInfo["hud"], "text", "")
 			end
 			-- Cap stamina at SPRINT_STAMINA
 			if playerInfo["stamina"] > SPRINT_STAMINA then
