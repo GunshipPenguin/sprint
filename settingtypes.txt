@@ -1,5 +1,5 @@
 #Key by which to start sprinting
-sprint_key (Sprint key) string "e"
+sprint_key (Sprint key) enum e e,w
 
 #Speed of sprinting
 sprint_speed (Sprint speed) float 1.8
