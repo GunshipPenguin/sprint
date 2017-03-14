@@ -8,11 +8,20 @@ distributed without any warranty.
 ]]
 
 --Configuration variables, these are all explained in README.md
-SPRINT_METHOD = 1
-SPRINT_SPEED = 1.8
-SPRINT_JUMP = 1.1
-SPRINT_STAMINA = 20
-SPRINT_TIMEOUT = 0.5 --Only used if SPRINT_METHOD = 0
+SPRINT_KEY = minetest.setting_getbool("sprint_key")
+if SPRINT_KEY == nil then SPRINT_KEY = "e" end
+
+SPRINT_SPEED = minetest.setting_getbool("sprint_speed")
+if SPRINT_SPEED == nil then SPRINT_SPEED = 1.8 end
+
+SPRINT_JUMP = minetest.setting_getbool("sprint_jump")
+if SPRINT_JUMP == nil then SPRINT_JUMP = 1.1 end
+
+SPRINT_STAMINA = minetest.setting_getbool("sprint_stamina")
+if SPRINT_STAMINA == nil then SPRINT_STAMINA = 20 end
+
+SPRINT_TIMEOUT = minetest.setting_getbool("sprint_timeout") --Only used if SPRINT_KEY = "w"
+if SPRINT_TIMEOUT == nil then SPRINT_TIMEOUT = 0.5 end
 
 if minetest.get_modpath("hudbars") ~= nil then
 	hb.register_hudbar("sprint", 0xFFFFFF, "Stamina",
@@ -24,11 +33,11 @@ else
 	SPRINT_HUDBARS_USED = false
 end
 
-if SPRINT_METHOD == 0 then
+if SPRINT_KEY == "w" then
 	dofile(minetest.get_modpath("sprint") .. "/wsprint.lua")
-elseif SPRINT_METHOD == 1 then
+elseif SPRINT_KEY == "e" then
 	dofile(minetest.get_modpath("sprint") .. "/esprint.lua")
 else
-	minetest.log("error", "Sprint Mod - SPRINT_METHOD is not set properly, using e to sprint")
+	minetest.log("error", "Sprint Mod - sprint_key is not set properly, using e to sprint")
 	dofile(minetest.get_modpath("sprint") .. "/esprint.lua")
 end

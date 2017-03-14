@@ -1,0 +1,14 @@
+#Key by which to start sprinting
+sprint_key (Sprint key) string "e"
+
+#Speed of sprinting
+sprint_speed (Sprint speed) float 1.8
+
+#Height of the player jump when sprinting
+sprint_jump (Sprint jump height) float 1.1
+
+#The maximum lenth of a sprint
+sprint_stamina (Sprint stamina) float 20
+
+#The interval of the doubletap of the W key when using that key for sprinting
+sprint_timeout (Sprint key timeout) float 0.5
